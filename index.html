@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taskify Glassmorphic Blue Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #020617 0%, #0f172a 50%, #172554 100%);
+            --text-main: #ffffff;
+            --text-muted: #cbd5e1;
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-hover-border: rgba(59, 130, 246, 0.4);
+            --input-bg: rgba(255, 255, 255, 0.08);
+            --input-text: #ffffff;
+            --input-placeholder: rgba(255, 255, 255, 0.4);
+            --shadow-color: rgba(0, 0, 0, 0.4);
+        }
+
+        [data-theme="light"] {
+            --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #bae6fd 100%);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.9);
+            --glass-hover-border: rgba(37, 99, 235, 0.4);
+            --input-bg: rgba(255, 255, 255, 0.85);
+            --input-text: #0f172a;
+            --input-placeholder: rgba(15, 23, 42, 0.4);
+            --shadow-color: rgba(14, 165, 233, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            background: var(--bg-gradient);
+            overflow-x: hidden;
+            color: var(--text-main);
+            transition: background 0.5s ease, color 0.5s ease;
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(90px);
+            z-index: -1;
+            opacity: 0.55;
+            border-radius: 50%;
+            animation: floatBlob 12s infinite alternate ease-in-out;
+            transition: opacity 0.5s ease;
+        }
+
+        [data-theme="light"] .blob {
+            opacity: 0.35;
+        }
+
+        @keyframes floatBlob {
+            0% { transform: translateY(0px) scale(1) rotate(0deg); }
+            100% { transform: translateY(-50px) scale(1.15) rotate(10deg); }
+        }
+
+        @keyframes slideUpFade {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.97);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .animate-entrance-1 {
+            animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .animate-entrance-2 {
+            opacity: 0;
+            animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+        }
+
+        .animate-entrance-3 {
+            opacity: 0;
+            animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 40px 0 var(--shadow-color);
+            border-radius: 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-panel:hover {
+            border-color: var(--glass-hover-border);
+            box-shadow: 0 16px 48px 0 var(--shadow-color), 0 0 20px rgba(59, 130, 246, 0.15);
+        }
+
+        .glass-input {
+            background: var(--input-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            color: var(--input-text);
+            transition: all 0.2s ease;
+        }
+
+        .glass-input::placeholder {
+            color: var(--input-placeholder);
+        }
+
+        .glass-input:focus {
+            outline: none;
+            border-color: rgba(59, 130, 246, 0.9);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .glass-btn {
+            background: rgba(37, 99, 235, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(96, 165, f5, 0.3);
+            transition: all 0.25s ease;
+        }
+
+        .glass-btn:hover {
+            background: rgba(37, 99, 235, 0.65);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.3);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 130, 246, 0.6);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-start p-4 sm:p-8 md:p-12 relative" data-theme="dark">
+
+    <div class="blob bg-blue-600 w-80 h-80 top-5 left-10"></div>
+    <div class="blob bg-cyan-500 w-96 h-96 bottom-10 right-10" style="animation-delay: 4s;"></div>
+    <div class="blob bg-indigo-600 w-72 h-72 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style="animation-delay: 2s;"></div>
+
+    <header class="w-full max-w-xl text-center mb-8 animate-entrance-1 relative">
+        <button onclick="toggleTheme()" id="themeToggleBtn" class="absolute right-0 top-0 w-10 h-10 rounded-full glass-panel flex items-center justify-center text-lg shadow-md hover:scale-110 transition" title="Ganti Tema">
+            <i id="themeIcon" class="fa-solid fa-moon"></i>
+        </button>
+
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-white/10 text-purple-300 border border-white/20 mb-3 shadow-lg">
+            <i class="fa-solid fa-sparkles"></i> SYSTEM UI GLASSMORPHISM
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight">
+            Taskify<span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">-APP</span>
+        </h1>
+        <p class="text-sm mt-2" style="color: var(--text-muted);">
+            Dari Develover FiProjection
+        </p>
+    </header>
+
+    <section class="w-full max-w-xl grid grid-cols-3 gap-3 mb-6 animate-entrance-2">
+        <div class="glass-panel p-4 text-center">
+            <div class="text-xs uppercase tracking-wider font-medium" style="color: var(--text-muted);">Total</div>
+            <div id="statTotal" class="text-2xl font-bold mt-1">0</div>
+        </div>
+        <div class="glass-panel p-4 text-center">
+            <div class="text-xs uppercase tracking-wider font-medium" style="color: var(--text-muted);">Selesai</div>
+            <div id="statCompleted" class="text-2xl font-bold text-cyan-400 mt-1">0</div>
+        </div>
+        <div class="glass-panel p-4 text-center">
+            <div class="text-xs uppercase tracking-wider font-medium" style="color: var(--text-muted);">Tertunda</div>
+            <div id="statPending" class="text-2xl font-bold text-amber-400 mt-1">0</div>
+        </div>
+    </section>
+
+    <main class="w-full max-w-xl glass-panel p-6 sm:p-8 animate-entrance-3">
+        <form id="taskForm" class="space-y-4 mb-6">
+            <input type="hidden" id="editingTaskId" value="" />
+            <div>
+                <label class="block text-xs font-medium mb-1.5" style="color: var(--text-muted);">Nama Pengerja</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
+                    <input id="taskAssignee" type="text" placeholder="Contoh: Hafi" class="glass-input w-full py-3 pl-11 pr-4 rounded-xl text-sm" autocomplete="off" />
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium mb-1.5" style="color: var(--text-muted);">Nama Tugas Baru</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </span>
+                    <input id="taskInput" type="text" placeholder="Contoh: Tugas Program JavaScript" class="glass-input w-full py-3 pl-11 pr-4 rounded-xl text-sm" autocomplete="off" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-medium mb-1.5" style="color: var(--text-muted);">Kategori</label>
+                    <select id="taskCategory" class="glass-input w-full py-2.5 px-3 rounded-xl text-sm cursor-pointer [&>option]:bg-slate-900 [&>option]:text-white">
+                        <option value="Pekerjaan">💼 Pekerjaan</option>
+                        <option value="Pribadi">🏠 Pribadi</option>
+                        <option value="Belajar">📚 Belajar</option>
+                        <option value="Lainnya">✨ Lainnya</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium mb-1.5" style="color: var(--text-muted);">Prioritas</label>
+                    <select id="taskPriority" class="glass-input w-full py-2.5 px-3 rounded-xl text-sm cursor-pointer [&>option]:bg-slate-900 [&>option]:text-white">
+                        <option value="Normal">🟢 Normal</option>
+                        <option value="Penting">🟡 Penting</option>
+                        <option value="Mendesak">🔴 Mendesak</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium mb-1.5" style="color: var(--text-muted);">Batas Waktu (Deadline)</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                        <i class="fa-regular fa-clock"></i>
+                    </span>
+                    <input id="taskDeadline" type="datetime-local" class="glass-input w-full py-3 pl-11 pr-4 rounded-xl text-sm cursor-pointer" />
+                </div>
+            </div>
+
+            <div class="flex gap-2">
+                <button type="submit" id="submitBtn" class="glass-btn flex-1 py-3 rounded-xl font-semibold text-sm text-white shadow-md flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-plus-circle"></i> Tambah Tugas
+                </button>
+                <button type="button" id="cancelEditBtn" onclick="cancelEdit()" class="hidden px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-xs font-semibold hover:bg-white/20 transition">Batal</button>
+            </div>
+        </form>
+
+        <div class="mb-4">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 text-xs">
+                    <i class="fa-solid fa-search"></i>
+                </span>
+                <input id="searchInput" type="text" placeholder="Cari tugas atau pengerja..." oninput="renderTasks()" class="glass-input w-full py-2.5 pl-10 pr-4 rounded-xl text-xs" autocomplete="off" />
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
+            <div class="flex gap-1.5 text-xs">
+                <button onclick="setFilter('all')" id="filterAll" class="px-3 py-1.5 rounded-lg bg-blue-600/40 border border-blue-400/30 text-white font-medium transition">Semua</button>
+                <button onclick="setFilter('active')" id="filterActive" class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 transition">Aktif</button>
+                <button onclick="setFilter('completed')" id="filterCompleted" class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 transition">Selesai</button>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="exportTasks()" class="text-xs text-blue-400 hover:text-blue-300 transition font-medium" title="Ekspor JSON">
+                    <i class="fa-solid fa-download"></i>
+                </button>
+                <button onclick="clearCompletedTasks()" class="text-xs text-rose-400 hover:text-rose-300 transition font-medium" title="Bersihkan Selesai">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="taskListContainer" class="space-y-3 max-h-80 overflow-y-auto pr-1">
+            <!-- Dynamic tasks rendered here -->
+        </div>
+    </main>
+
+    <div id="customModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-panel p-6 max-w-sm w-full text-center space-y-4 border border-white/25">
+            <div id="modalIcon" class="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto text-xl border border-rose-500/30">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 id="modalTitle" class="text-lg font-bold">Konfirmasi</h3>
+            <p id="modalMessage" class="text-xs leading-relaxed" style="color: var(--text-muted);">Apakah Anda yakin ingin melanjutkan tindakan ini?</p>
+            <div class="flex gap-2 pt-2">
+                <button id="modalCancelBtn" onclick="closeModal(false)" class="flex-1 py-2.5 rounded-xl bg-white/10 border border-white/15 text-xs font-semibold hover:bg-white/20 transition">Batal</button>
+                <button id="modalConfirmBtn" onclick="closeModal(true)" class="flex-1 py-2.5 rounded-xl bg-rose-600/60 border border-rose-400/40 text-xs font-semibold hover:bg-rose-600/80 transition text-white">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let tasks = JSON.parse(localStorage.getItem('glass_blue_tasks')) || [
+            { id: 1, title: 'Optimasi performa query database', category: 'Pekerjaan', priority: 'Penting', deadline: null, assignee: 'Ahmad', isDone: true },
+            { id: 2, title: 'Menyelesaikan modul pembelajaran React', category: 'Belajar', priority: 'Normal', deadline: null, assignee: 'Siti', isDone: false },
+            { id: 3, title: 'Deployment server produksi ke cloud', category: 'Pekerjaan', priority: 'Mendesak', deadline: null, assignee: 'Budi', isDone: false }
+        ];
+
+        let currentFilter = 'all';
+        let pendingAction = null;
+
+        // Initialize Theme from localStorage
+        const savedTheme = localStorage.getItem('taskify_theme') || 'dark';
+        document.body.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('taskify_theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (theme === 'light') {
+                icon.className = "fa-solid fa-sun text-amber-500";
+            } else {
+                icon.className = "fa-solid fa-moon text-blue-300";
+            }
+        }
+
+        const taskForm = document.getElementById('taskForm');
+        const taskInput = document.getElementById('taskInput');
+        const taskAssignee = document.getElementById('taskAssignee');
+        const taskCategory = document.getElementById('taskCategory');
+        const taskPriority = document.getElementById('taskPriority');
+        const taskDeadline = document.getElementById('taskDeadline');
+        const taskListContainer = document.getElementById('taskListContainer');
+        const searchInput = document.getElementById('searchInput');
+        const editingTaskId = document.getElementById('editingTaskId');
+        const submitBtn = document.getElementById('submitBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+
+        const statTotal = document.getElementById('statTotal');
+        const statCompleted = document.getElementById('statCompleted');
+        const statPending = document.getElementById('statPending');
+
+        function updateStats() {
+            const total = tasks.length;
+            const completed = tasks.filter(t => t.isDone).length;
+            const pending = total - completed;
+            statTotal.innerText = total;
+            statCompleted.innerText = completed;
+            statPending.innerText = pending;
+        }
+
+        function saveAndRender() {
+            checkExpiredTasks();
+            localStorage.setItem('glass_blue_tasks', JSON.stringify(tasks));
+            updateStats();
+            renderTasks();
+        }
+
+        function showModal(title, message, isDanger = true, onConfirm) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = message;
+            const iconEl = document.getElementById('modalIcon');
+            const confirmBtn = document.getElementById('modalConfirmBtn');
+
+            if (isDanger) {
+                iconEl.className = "w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto text-xl border border-rose-500/30";
+                iconEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+                confirmBtn.className = "flex-1 py-2.5 rounded-xl bg-rose-600/60 border border-rose-400/40 text-xs font-semibold hover:bg-rose-600/80 transition text-white";
+                confirmBtn.innerText = "Hapus";
+            } else {
+                iconEl.className = "w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mx-auto text-xl border border-blue-500/30";
+                iconEl.innerHTML = '<i class="fa-solid fa-circle-info"></i>';
+                confirmBtn.className = "flex-1 py-2.5 rounded-xl bg-blue-600/60 border border-blue-400/40 text-xs font-semibold hover:bg-blue-600/80 transition text-white";
+                confirmBtn.innerText = "Ya";
+            }
+
+            pendingAction = onConfirm;
+            document.getElementById('customModal').classList.remove('hidden');
+        }
+
+        function closeModal(confirmed) {
+            document.getElementById('customModal').classList.add('hidden');
+            if (confirmed && pendingAction) {
+                pendingAction();
+            }
+            pendingAction = null;
+        }
+
+        function checkExpiredTasks() {
+            const now = Date.now();
+            tasks = tasks.filter(t => {
+                if (!t.deadline) return true;
+                return t.deadline > now;
+            });
+        }
+
+        function renderTasks() {
+            let filtered = tasks;
+            const query = searchInput.value.toLowerCase().trim();
+
+            if (query) {
+                filtered = filtered.filter(t => 
+                    t.title.toLowerCase().includes(query) || 
+                    t.assignee.toLowerCase().includes(query) ||
+                    t.category.toLowerCase().includes(query)
+                );
+            }
+
+            if (currentFilter === 'active') {
+                filtered = filtered.filter(t => !t.isDone);
+            } else if (currentFilter === 'completed') {
+                filtered = filtered.filter(t => t.isDone);
+            }
+
+            if (filtered.length === 0) {
+                taskListContainer.innerHTML = `
+                    <div class="text-center py-10 text-xs" style="color: var(--text-muted);">
+                        <i class="fa-regular fa-folder-open text-3xl mb-2 opacity-50 block"></i>
+                        Tidak ada tugas yang ditemukan.
+                    </div>
+                `;
+                return;
+            }
+
+            taskListContainer.innerHTML = filtered.map(task => {
+                let priorityBadge = '';
+                if (task.priority === 'Mendesak') {
+                    priorityBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-500/20 text-rose-500 dark:text-rose-300 border border-rose-500/30">Mendesak</span>';
+                } else if (task.priority === 'Penting') {
+                    priorityBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/20 text-amber-600 dark:text-amber-300 border border-amber-500/30">Penting</span>';
+                } else {
+                    priorityBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/30">Normal</span>';
+                }
+
+                let deadlineBadge = '';
+                if (task.deadline) {
+                    const formattedDate = new Date(task.deadline).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+                    deadlineBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-purple-500/20 text-purple-600 dark:text-purple-300 border border-purple-500/30 flex items-center gap-1"><i class="fa-regular fa-clock"></i> ${formattedDate}</span>`;
+                }
+
+                return `
+                    <div class="glass-panel p-3.5 flex items-center justify-between gap-3 group transition hover:border-blue-400/40">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <input type="checkbox" ${task.isDone ? 'checked' : ''} onchange="toggleTask(${task.id})" class="w-4 h-4 rounded accent-blue-500 cursor-pointer" />
+                            <div class="min-w-0">
+                                <div class="text-[11px] font-semibold text-blue-600 dark:text-blue-300 mb-0.5 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-user-circle text-xs"></i> ${escapeHtml(task.assignee || 'Tanpa Nama')}
+                                </div>
+                                <p class="text-sm font-medium truncate ${task.isDone ? 'line-through opacity-60' : ''}">${escapeHtml(task.title)}</p>
+                                <div class="flex items-center gap-2 mt-1 flex-wrap">
+                                    <span class="text-[10px] text-blue-600 dark:text-blue-300 bg-blue-500/20 px-2 py-0.5 rounded-md border border-blue-500/30">${task.category}</span>
+                                    ${priorityBadge}
+                                    ${deadlineBadge}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1 opacity-80 sm:opacity-0 group-hover:opacity-100 transition">
+                            <button onclick="editTask(${task.id})" class="text-slate-400 hover:text-blue-500 dark:hover:text-blue-300 p-2 rounded-lg hover:bg-blue-500/10 transition" title="Edit Tugas">
+                                <i class="fa-solid fa-pen text-xs"></i>
+                            </button>
+                            <button onclick="confirmDelete(${task.id})" class="text-slate-400 hover:text-rose-400 p-2 rounded-lg hover:bg-rose-500/10 transition" title="Hapus Tugas">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function escapeHtml(text) {
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        taskForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = taskInput.value.trim();
+            if (title === '') {
+                showModal('Peringatan', 'Nama tugas tidak boleh kosong!', false, null);
+                return;
+            }
+
+            const assignee = taskAssignee.value.trim() || 'Tanpa Nama';
+            const deadlineVal = taskDeadline.value;
+            const editId = editingTaskId.value;
+
+            if (editId) {
+                const task = tasks.find(t => t.id == editId);
+                if (task) {
+                    task.title = title;
+                    task.assignee = assignee;
+                    task.category = taskCategory.value;
+                    task.priority = taskPriority.value;
+                    task.deadline = deadlineVal ? new Date(deadlineVal).getTime() : null;
+                }
+                cancelEdit();
+            } else {
+                const newTask = {
+                    id: Date.now(),
+                    title: title,
+                    assignee: assignee,
+                    category: taskCategory.value,
+                    priority: taskPriority.value,
+                    deadline: deadlineVal ? new Date(deadlineVal).getTime() : null,
+                    isDone: false
+                };
+                tasks.unshift(newTask);
+            }
+
+            taskInput.value = '';
+            taskAssignee.value = '';
+            taskDeadline.value = '';
+            saveAndRender();
+        });
+
+        function editTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (!task) return;
+
+            editingTaskId.value = task.id;
+            taskInput.value = task.title;
+            taskAssignee.value = task.assignee === 'Tanpa Nama' ? '' : task.assignee;
+            taskCategory.value = task.category;
+            taskPriority.value = task.priority;
+            
+            if (task.deadline) {
+                const date = new Date(task.deadline);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                taskDeadline.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+            } else {
+                taskDeadline.value = '';
+            }
+
+            submitBtn.innerHTML = '<i class="fa-solid fa-save"></i> Simpan Perubahan';
+            cancelEditBtn.classList.remove('hidden');
+            taskInput.focus();
+        }
+
+        function cancelEdit() {
+            editingTaskId.value = '';
+            taskInput.value = '';
+            taskAssignee.value = '';
+            taskDeadline.value = '';
+            submitBtn.innerHTML = '<i class="fa-solid fa-plus-circle"></i> Tambah Tugas';
+            cancelEditBtn.classList.add('hidden');
+        }
+
+        function toggleTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.isDone = !task.isDone;
+                saveAndRender();
+            }
+        }
+
+        setInterval(() => {
+            const now = Date.now();
+            const hasExpired = tasks.some(t => t.deadline && t.deadline <= now);
+            if (hasExpired) {
+                saveAndRender();
+            }
+        }, 10000);
+
+        function confirmDelete(id) {
+            showModal('Hapus Tugas', 'Apakah Anda yakin ingin menghapus tugas ini?', true, () => {
+                tasks = tasks.filter(t => t.id !== id);
+                saveAndRender();
+            });
+        }
+
+        function clearCompletedTasks() {
+            const completedCount = tasks.filter(t => t.isDone).length;
+            if (completedCount === 0) {
+                showModal('Informasi', 'Tidak ada tugas selesai yang dapat dibersihkan.', false, null);
+                return;
+            }
+            showModal('Bersihkan Selesai', `Yakin ingin menghapus ${completedCount} tugas yang sudah selesai?`, true, () => {
+                tasks = tasks.filter(t => !t.isDone);
+                saveAndRender();
+            });
+        }
+
+        function exportTasks() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(tasks, null, 2));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", "taskify_backup.json");
+            dlAnchorElem.click();
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            ['all', 'active', 'completed'].forEach(f => {
+                const btn = document.getElementById(`filter${f.charAt(0).toUpperCase() + f.slice(1)}`);
+                if (f === filter) {
+                    btn.className = "px-3 py-1.5 rounded-lg bg-blue-600/40 border border-blue-400/30 text-white font-medium transition";
+                } else {
+                    btn.className = "px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:bg-white/10 transition";
+                }
+            });
+            renderTasks();
+        }
+
+        saveAndRender();
+    </script>
+</body>
+</html>
